@@ -1,35 +1,51 @@
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
-
+  const [data ,setData]=useState([]);
+  const fetchData=async()=>{
+    const getData=await fetch('https://dummyjson.com/products',
+    {
+      method:"GET",
+      headers:{
+        "Content-Type":"application/json",
+        "Accept":"application/json"
+      }
+    })
+    const dummyData=await getData.json();
+    setData(dummyData.products)
+  }
+useEffect(()=>{
+fetchData();
+},[])
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="p-4">
+      <h2 className="text-xl font-bold mb-4">User Table</h2>
+      <div className="overflow-x-auto">
+        <table className="table-auto w-full border-collapse border border-gray-300">
+          <thead className="bg-gray-200">
+            <tr>
+              <th className="border border-gray-300 px-4 py-2">Title</th>
+              <th className="border border-gray-300 px-4 py-2">Category</th>
+              <th className="border border-gray-300 px-4 py-2">Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((user) => (
+              <tr key={user.id} className="hover:bg-gray-100">
+                <td className="border border-gray-300 px-4 py-2">{user.title}</td>
+                <td className="border border-gray-300 px-4 py-2">{user.category}</td>
+                <td className="border border-gray-300 px-4 py-2">{user.price}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-      <h1>Vite + React123</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
 export default App
